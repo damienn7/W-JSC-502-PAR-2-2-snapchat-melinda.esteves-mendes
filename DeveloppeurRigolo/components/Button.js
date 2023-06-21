@@ -1,37 +1,38 @@
-import { StyleSheet, View, Pressable, Text } from 'react-native'
+import { StyleSheet, View, Pressable, Text } from 'react-native';
 
-export default function Button({ label }) {
-    return (
-        <View style={styles.buttonContainer}>
-            <Pressable style={styles.button} onPress={() => alert('Vous avez poussé le bouchon un peu trop loin')}>
-                <Text style={styles.buttonLabel}>{ label }</Text>
-            </Pressable>
-        </View>
-    );
+export default function Button({ label, buttonStyle }) {
+  return (
+    <View style={styles.buttonContainer}>
+      <Pressable style={[styles.button, buttonStyle]} onPress={() => alert('ALED CA MARCHE PAS')}>
+        <Text style={styles.buttonLabel}>{label}</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    buttonContainer: {
-      width: 320,
-      height: 68,
-      marginHorizontal: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 3,
-    },
-    button: {
-      borderRadius: 10,
-      width: '100%',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-    },
-    buttonIcon: {
-      paddingRight: 8,
-    },
-    buttonLabel: {
-      color: '#fff',
-      fontSize: 16,
-    },
-  });
+  buttonContainer: {
+    width: 320,
+    height: 68,
+    marginHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 3,
+  },
+  button: {
+    borderRadius: 10,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  buttonIcon: {
+    paddingRight: 8,
+  },
+  buttonLabel: {
+    color: '#000',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});

@@ -1,21 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image} from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 
 import Button from './components/Button';
-import ImageViewer from './components/ImageViewer';
+import Logo from './components/Logo';
 
-const Images = require('./assets/papillon.jpg');
+const Images = require('./assets/snapchat.png');
+
+const array = ['#FFD700', '#FFEE75', '#b0f2b6', '#8F00FF' ];
+const randomElement = array[Math.floor(Math.random() * array.length)];
 
 export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageViewer placeholderImageSource={Images}/>
+        <Logo placeholderImageSource={Images} />
       </View>
-      <Text style={styles.text}>Bonjour jeune Papillon !</Text>
-      <Text style={styles.text}>Allons chasser des papillons ensemble</Text>
-      <View style={styles.footerContainer}>
-        <Button label="Appuie"/>
+      <Text style={styles.text}>Bonjour jeune Papillon ! {'\n'}Rejoins l'essaim dès maintenant</Text>
+      <View style={styles.buttonContainer}>
+        <Button
+          label="Inscription"
+          onPress={() => console.log('Bouton Inscription pressé')}
+          buttonStyle={styles.buttonInscription}
+        />
+        <Button
+          label="Connexion"
+          onPress={() => console.log('Bouton Connexion pressé')}
+          buttonStyle={styles.buttonConnexion}
+        />
       </View>
       <StatusBar style="auto" />
     </View>
@@ -25,20 +36,28 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
+    backgroundColor: randomElement,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 200,
+    paddingBottom: 150,
   },
   text: {
-    color: '#fff',
+    color: 'black',
+    fontWeight: 'bold',
+    paddingBottom: 50,
   },
   imageContainer: {
     flex: 1,
-    paddingTop: 48,
+    paddingTop: 30,
   },
-  footerContainer: {
-    flex: 1 / 3,
-    alignItems: 'center',
+  buttonContainer: {
+    marginTop: 30,
+  },
+  buttonInscription: {
+    backgroundColor: '#DA012D', 
+    marginBottom: 5,
+  },
+  buttonConnexion: {
+    backgroundColor: '#007FFF',
   },
 });
