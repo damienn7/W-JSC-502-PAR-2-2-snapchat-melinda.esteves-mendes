@@ -1,48 +1,63 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Button from './components/Button';
-import Logo from './components/Logo';
-import SignInScreen from './SignInScreen';
-import SignUpScreen from './SignUpScreen';
+// import { StatusBar } from 'expo-status-bar';
+// import { StyleSheet, Text, View, Image } from 'react-native';
 
-// Importez votre source d'image ici
+// import Button from './app/components/Button';
+// import Logo from './app/components/Logo';
+
+// const Images = require('./assets/snapchat.png');
+
+// const array = ['#FFD700', '#FFEE75', '#b0f2b6', '#8F00FF' ];
+// const randomElement = array[Math.floor(Math.random() * array.length)];
+
+// export default function App() {
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.imageContainer}>
+//         <Logo placeholderImageSource={Images} />
+//       </View>
+//       <Text style={styles.text}>Bonjour jeune Papillon ! {'\n'}Rejoins l'essaim dès maintenant</Text>
+//       <View style={styles.buttonContainer}>
+//         <Button
+//           label="Inscription"
+//           onPress={() => console.log('Bouton Inscription pressé')}
+//           buttonStyle={styles.buttonInscription}
+//         />
+//         <Button
+//           label="Connexion"
+//           onPress={() => console.log('Bouton Connexion pressé')}
+//           buttonStyle={styles.buttonConnexion}
+//         />
+//       </View>
+//       <StatusBar style="auto" />
+//     </View>
+//   );
+// }
+
 const Images = require('./assets/snapchat.png');
 
+const array = ['#FFD700', '#FFEE75', '#b0f2b6', '#8F00FF' ];
+const randomElement = array[Math.floor(Math.random() * array.length)];
+
 export default function App() {
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
-
-  const handleSignInClick = () => {
-    setShowSignIn(true);
-    setShowSignUp(false);
-  };
-
-  const handleSignUpClick = () => {
-    setShowSignIn(false);
-    setShowSignUp(true);
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        {/* Utilisez la variable Images dans placeholderImageSource */}
         <Logo placeholderImageSource={Images} />
       </View>
-      <Text style={styles.text}>Bonjour jeune Papillon !{'\n'}Rejoins l'essaim dès maintenant</Text>
+      <Text style={styles.text}>Bonjour jeune Papillon ! {'\n'}Rejoins l'essaim dès maintenant</Text>
       <View style={styles.buttonContainer}>
         <Button
           label="Inscription"
-          onPress={handleSignUpClick}
+          onPress={() => console.log('Bouton Inscription pressé')}
           buttonStyle={styles.buttonInscription}
         />
         <Button
           label="Connexion"
-          onPress={handleSignInClick}
+          onPress={() => console.log('Bouton Connexion pressé')}
           buttonStyle={styles.buttonConnexion}
         />
       </View>
-      {showSignIn && <SignInScreen />}
-      {showSignUp && <SignUpScreen />}
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -50,9 +65,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: randomElement,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 150,
   },
   text: {
     color: 'black',
@@ -67,7 +83,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   buttonInscription: {
-    backgroundColor: '#DA012D',
+    backgroundColor: '#DA012D', 
     marginBottom: 5,
   },
   buttonConnexion: {
