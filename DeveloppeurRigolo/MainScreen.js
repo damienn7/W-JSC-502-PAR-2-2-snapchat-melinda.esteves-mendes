@@ -1,31 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Button from './components/Button';
 import Logo from './components/Logo';
-import SignInScreen from './SignInScreen';
-import SignUpScreen from './SignUpScreen';
+import { useNavigation } from '@react-navigation/native';
 
-// Importez votre source d'image ici
-const Images = require('./assets/snapchat.png');
-
-export default function App() {
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
+const MainScreen = () => {
+  const navigation = useNavigation();
 
   const handleSignInClick = () => {
-    setShowSignIn(true);
-    setShowSignUp(false);
+    navigation.navigate('SignIn');
   };
 
   const handleSignUpClick = () => {
-    setShowSignIn(false);
-    setShowSignUp(true);
+    navigation.navigate('SignUp');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        {/* Utilisez la variable Images dans placeholderImageSource */}
         <Logo placeholderImageSource={Images} />
       </View>
       <Text style={styles.text}>Bonjour jeune Papillon !{'\n'}Rejoins l'essaim dès maintenant</Text>
@@ -41,23 +33,24 @@ export default function App() {
           buttonStyle={styles.buttonConnexion}
         />
       </View>
-      {showSignIn && <SignInScreen />}
-      {showSignUp && <SignUpScreen />}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: randomElement,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 150,
   },
   text: {
     color: 'black',
     fontWeight: 'bold',
     paddingBottom: 50,
+    textAlign: 'center',
+    fontSize: 18,
   },
   imageContainer: {
     flex: 1,
@@ -74,3 +67,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#007FFF',
   },
 });
+
+export default MainScreen;
