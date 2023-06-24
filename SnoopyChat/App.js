@@ -7,7 +7,8 @@ import {
   View,
   Image,
 } from "react-native";
-import Swal from 'sweetalert2';
+import CameraScreen from "./src/screens/CameraScreen";
+import Swal from "sweetalert2";
 import TextInput from "react-native-textinput-with-icons";
 import Home from "./src/components/Home";
 import Button from "./src/components/Button";
@@ -65,9 +66,8 @@ export default function App() {
     setUsername("");
   };
 
-  const checkAuth = async (email, password,Swal) => {
+  const checkAuth = async (email, password, Swal) => {
     setToken("");
-    console.log("here");
     axios({
       method: "PUT",
       url: "https://mysnapchat.epidoc.eu/user",
@@ -77,7 +77,7 @@ export default function App() {
         if (response.data.data.token) {
           setToken(response.data.data.token);
           setAuth(true);
-          setPress("/auth");
+          setPress("/auth/cam");
         }
       })
       .catch(function (error) {
@@ -89,11 +89,19 @@ export default function App() {
         //     dependencies={[this.state.firstName, this.state.lastName]}
         //   ></SweetAlert>
         // );
-
       });
   };
 
+  // const logout = (token,setToken) => {
+  //   console.log(token);
+  //   setToken("");
+  //   console.log(token);
+  //   setPress('/login');
+  //   alert(token)
+  // }
+
   const handleView = (view) => {
+    console.log(token);
     setPress(view);
   };
 
@@ -196,6 +204,14 @@ export default function App() {
               }}
               buttonStyle={styles.buttonInscription}
             />
+            <Button
+              label="Accueil"
+              onPress={() => {
+                handleView("/home");
+                // console.log({token});
+              }}
+              buttonStyle={styles.buttonConnexion}
+            />
           </View>
           {/* <Home onPressRegister={() => handleRegister()} onPressLogin={() => heandleLogin()}/> */}
           <StatusBar style="auto" />
@@ -208,9 +224,6 @@ export default function App() {
           <View style={styles.imageContainer}>
             <Logo placeholderImageSource={Images} />
           </View>
-          <Text style={styles.text}>
-            Bonjour jeune Papillon ! {"\n"}Connecte-toi !
-          </Text>
           <View>
             <TouchableWithoutFeedback
               onPress={Keyboard.dismiss}
@@ -230,7 +243,12 @@ export default function App() {
               <TextInput
                 style={styles.textInput}
                 label="Password"
-                secureTextEntry
+                secureTextEntry={secure}
+                leftIconType="oct"
+                rippleColor="blue"
+                rightIcon={eye}
+                rightIconType="material"
+                onPress={() => displayPassword(eye, secure)}
                 value={password}
                 onChangeText={(password) => setPassword(password)}
               />
@@ -251,19 +269,51 @@ export default function App() {
               }}
               buttonStyle={styles.buttonInscription}
             />
+            <Button
+              label="Accueil"
+              onPress={() => {
+                handleView("/home");
+                // console.log({token});
+              }}
+              buttonStyle={styles.buttonConnexion}
+            />
           </View>
           {/* <Home onPressRegister={() => handleRegister()} onPressLogin={() => heandleLogin()}/> */}
           <StatusBar style="auto" />
         </View>
       );
       break;
-    case "/auth":
+    case "/auth/cam":
       return (
-        <View style={styles.container}>
-          <Text>Hello world !</Text>
-        </View>
+            <CameraScreen handleView={handleView}/>
       );
       break;
+
+    case "/auth/parameters":
+      return (
+        <View style={styles.container}>
+          <Text>Parametres !</Text>
+          <Button
+            label="<"
+            onPress={() => {
+              handleView("/auth/cam");
+              // console.log({token});
+            }}
+            buttonStyle={styles.buttonConnexion}
+          />
+            <Button
+              label="Deconnexion"
+              onPress={() => {
+                {
+                  setToken(undefined);
+                }
+                handleView("/login");
+                // console.log({token});
+              }}
+              buttonStyle={styles.buttonConnexion}
+            />
+        </View>
+      );
     default:
       break;
   }
