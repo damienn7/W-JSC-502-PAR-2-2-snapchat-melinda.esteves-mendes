@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Camera } from "expo-camera";
+import { ImageManipulator } from 'expo';
 import * as Permissions from "expo-permissions";
 import {
   Text,
@@ -9,8 +10,9 @@ import {
   Modal,
   Image,
 } from "react-native";
+import * as FileSystem from 'expo-file-system';
 import AppIcon from "../components/AppIcon/AppIcon";
-const CameraScreen = ({ handleView }) => {
+const CameraScreen = ({ handleView, setPic, handleFriends, toSend }) => {
   const [flashMode, setFlashMode] = React.useState("off");
   const [allowedCamera, setAllowedCamera] = useState(false);
 
@@ -67,8 +69,12 @@ const CameraScreen = ({ handleView }) => {
       return;
     }
     try {
-      const pic = await camRef.current.takePictureAsync();
+        const options = { quality: 0, base64: true };
+      const pic = await camRef.current.takePictureAsync(options);
       setImagePreview(pic.uri);
+
+      const base64 = await FileSystem.readAsStringAsync(pic.uri, { encoding: 'base64' });
+      setPic(base64);
       setIsOpen(true);
     } catch (error) {
       console.log("Erreur dans la prise de photo");
@@ -104,6 +110,7 @@ const CameraScreen = ({ handleView }) => {
             size={25}
             color="#0e153a"
             style={styles.sendBtn}
+            onPress={handleFriends}
           />
         </View>
         <View style={styles.closeBtn}>
@@ -124,7 +131,11 @@ const CameraScreen = ({ handleView }) => {
         style={{ flex: 1 }}
         type={typeCamera}
         // flashMode={flashMode}
-        flashMode={flashMode === "on" ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
+        flashMode={
+          flashMode === "on"
+            ? Camera.Constants.FlashMode.torch
+            : Camera.Constants.FlashMode.off
+        }
         ref={camRef}
       >
         <TouchableOpacity
@@ -167,7 +178,7 @@ const CameraScreen = ({ handleView }) => {
             color={flashMode === "on" ? "#000" : "#eee"}
             IonName="flash-outline"
             size={20}
-            onPress={()=>changeFlashMode()}
+            onPress={() => changeFlashMode()}
           />
         </View>
       </Camera>

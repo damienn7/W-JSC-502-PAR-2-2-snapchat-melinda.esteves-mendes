@@ -6,8 +6,11 @@ import {
   Text,
   View,
   Image,
+  ImageStore,
+  ImageEditor,
 } from "react-native";
 import CameraScreen from "./src/screens/CameraScreen";
+import Friends from "./src/screens/Friends";
 import Swal from "sweetalert2";
 import TextInput from "react-native-textinput-with-icons";
 import Home from "./src/components/Home";
@@ -17,7 +20,8 @@ import { useState } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { Input } from "./src/components/PasswordInput";
 import axios from "axios";
-
+import { ImageManipulator } from 'expo';
+// import { DocumentDirectoryPath, writeFile } from 'react-native-fs';
 const Images = require("./assets/snapchat.png");
 
 const array = ["#FFD700", "#FFEE75", "#b0f2b6", "#8F00FF"];
@@ -32,6 +36,8 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [eye, setEye] = useState("eye");
   const [secure, setSecure] = useState(true);
+  const [friends, setFriends] = useState([""]);
+  const [pic,setPic] = useState("");
 
   function displayPassword() {
     if (eye == "eye") {
@@ -42,6 +48,43 @@ export default function App() {
       setSecure(true);
     }
   }
+
+  const toSend = async (pic)=>{
+    setPic(pic);
+  }
+
+  const send = async (friendId,duration=5) => {
+    console.log("Bearer " + token);
+    // alert(pic);
+    // const saveFile = async () => {
+    //   const path = `./base64.txt`;
+    
+    //   try {
+    //     await writeFile(path, pic, 'utf8');
+    //     Alert.alert('File saved', null, [{ text: 'OK' }]);
+    //   } catch (e) {
+    //     console.log('error', e);
+    //   }
+    // };
+    const headers = { Authorization: "Bearer " + token };
+    axios({
+      method: "POST",
+      url: "https://mysnapchat.epidoc.eu/snap",
+      headers,
+      data: {
+        to: friendId,
+        image: `data:image/jpeg;base64,${pic}`,
+        duration:duration,
+      }
+    })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error, response) {
+        alert(`Erreur : ${error}`);
+        console.log(response);
+      });
+  } 
 
   const register = async (email, password, username) => {
     axios({
@@ -66,7 +109,7 @@ export default function App() {
     setUsername("");
   };
 
-  const checkAuth = async (email, password, Swal) => {
+  const checkAuth = async (email, password) => {
     setToken("");
     axios({
       method: "PUT",
@@ -82,26 +125,36 @@ export default function App() {
       })
       .catch(function (error) {
         alert("Erreur : L'identifiant ou le mot de passe est incorrecte !");
-        // return (
-        //   <SweetAlert
-        //     title={"Success"}
-        //     onConfirm={this.onConfirm}
-        //     dependencies={[this.state.firstName, this.state.lastName]}
-        //   ></SweetAlert>
-        // );
       });
   };
 
-  // const logout = (token,setToken) => {
-  //   console.log(token);
-  //   setToken("");
-  //   console.log(token);
-  //   setPress('/login');
-  //   alert(token)
-  // }
+  const handleFriends = async () => {
+    console.log("Bearer " + token);
+    const headers = { Authorization: "Bearer " + token };
+    axios({
+      method: "GET",
+      url: "https://mysnapchat.epidoc.eu/user/friends",
+      headers,
+    })
+      .then(function (response) {
+        // if (!response.data.data) {
+        // }
+        handleView("/auth/snap/send");
+        setFriends(response.data.data);
+        // console.log(response.data.data);
+        console.log(friends);
+      })
+      .catch(function (error, response) {
+        alert(`Erreur : ${error}`);
+        // checkAuth(email,password);
+        // handleFriends();
+        console.log(response);
+      });
+  };
 
   const handleView = (view) => {
-    console.log(token);
+    // console.log(token);
+    // alert("here");
     setPress(view);
   };
 
@@ -285,7 +338,7 @@ export default function App() {
       break;
     case "/auth/cam":
       return (
-            <CameraScreen handleView={handleView}/>
+        <CameraScreen handleView={handleView} setPic={setPic} handleFriends={handleFriends} toSend={toSend}/>
       );
       break;
 
@@ -301,19 +354,53 @@ export default function App() {
             }}
             buttonStyle={styles.buttonConnexion}
           />
-            <Button
-              label="Deconnexion"
-              onPress={() => {
-                {
-                  setToken(undefined);
-                }
-                handleView("/login");
-                // console.log({token});
-              }}
-              buttonStyle={styles.buttonConnexion}
-            />
+          <Button
+            label="Deconnexion"
+            onPress={() => {
+              {
+                setToken(undefined);
+              }
+              handleView("/login");
+              // console.log({token});
+            }}
+            buttonStyle={styles.buttonConnexion}
+          />
         </View>
       );
+    case "/auth/snap/send":
+      return (
+        <View
+          style={[
+            styles.container,
+            { display: "flex", flexDirection: "column" },
+          ]}
+        >
+
+          {friends.map((friend) => {
+            // alert(friend.username)
+            if (friend.username) {
+              return(
+              <Friends friend={friend.username} onClick={()=>send(friend._id)}/>
+              )
+            } else {
+              return (
+              <Friends friend={undefined} />
+              )
+            }
+          })}
+          <TextInput></TextInput>
+
+          <Button
+            label="<"
+            onPress={() => {
+              handleView("/auth/cam");
+              // console.log({token});
+            }}
+            buttonStyle={styles.buttonConnexion}
+          />
+        </View>
+      );
+      break;
     default:
       break;
   }
@@ -326,6 +413,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 150,
+  },
+  box: {
+    width: 100,
+    height: 20,
+    borderTopColor: "#fff",
+    borderBottomColor: "#fff",
   },
   text: {
     color: "black",
